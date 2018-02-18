@@ -1,6 +1,6 @@
 class Game < ApplicationRecord
-  belongs_to :owner, class_name: 'User', foreign_key: 'owner_id'
-  belongs_to :opponent, class_name: 'User', foreign_key: 'opponent_id'
+  belongs_to :owner, class_name: 'User', foreign_key: 'owner'
+  belongs_to :opponent, class_name: 'User', foreign_key: 'opponent', optional: true
 
   scope :available, -> { where(Game.arel_table[:owner].not_eq(0)).where(opponent = nil) }
 
