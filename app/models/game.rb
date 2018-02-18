@@ -4,7 +4,6 @@ class Game < ApplicationRecord
 
   scope :available, -> { where(Game.arel_table[:owner].not_eq(0)).where(opponent = nil) }
 
-populate-game
   def populate_game!(piece_params)
     Piece.create("Rook", 0, 0, @game.id, "white", false)
     Piece.create("Knight", 1, 0, @game.id, "white", false)
