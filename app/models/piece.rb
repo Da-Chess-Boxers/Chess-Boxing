@@ -98,8 +98,26 @@ class Piece < ApplicationRecord
     else
       while x_current > x_destination && y_current < y_destination do |x, y|
         return true if is_occupied?(x -= 1)(y -= 1) == true
-        end
       end
     end
   end
+
+  def move_to!(x_new, y_new)
+    x_current = self.position_x
+    y_current = self.position_y
+    x_destination = position_x
+    y_destination = position_y
+
+    #moving to an empty space, move is valid
+    if ! is_occupied?(x_destination, y_destination) && valid_move?(x_destination, y_destination)
+      piece.update_attributes(:position_x => x_destination, :position_y => y_destination)
+    #moving to an occupied space, move is valid
+    #the valid_move? method covers the color of the piece
+    elsif is_occupied?(x_destination, y_destination) && valid_move?(x_destination, y_destination)
+      game.pieces.where(position_x = x_destination, position_y = y_destination).delete
+      piece.update_attributes(:position_x => x_destination, :position_y => y_destination)
+    end
+  end
+
+
 end
