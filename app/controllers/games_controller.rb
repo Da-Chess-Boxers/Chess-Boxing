@@ -8,7 +8,9 @@ class GamesController < ApplicationController
   end
 
   def create
-    @game = Game.create(game_params)
+    @game = Game.new(game_params)
+    @game.owner = current_user
+    @game.save!
     redirect_to game_path(@game)
   end
 
