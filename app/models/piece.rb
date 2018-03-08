@@ -7,7 +7,7 @@ class Piece < ApplicationRecord
   end
 
   def valid_move?(position_x, position_y)
-    if outside_board?(self.position_x, self.position_y)
+    if outside_board?(position_x, position_y) || is_obstructed()
       return false
     else
       return true
@@ -53,10 +53,13 @@ class Piece < ApplicationRecord
     y_destination = position_y
 
     if y_current < y_destination #up
+      # puts "MOVIN ON UP"
       (y_current+1).upto(y_destination-1) do |y|
         return is_occupied?(x_current, y)
       end
-      else (y_current-1).downto(y_destination+1) do |y|
+      else
+        # puts "MOVING DOWN"
+        (y_current-1).downto(y_destination+1) do |y|
         return is_occupied?(x_current, y)
       end
       false
@@ -70,7 +73,7 @@ class Piece < ApplicationRecord
 
     if x_current < x_destination
       (x_current + 1).upto(x_destination - 1).each do |x|
-        return true if game.is_occupied?(x, y_current)
+        return true if is_occupied?(x, y_current)
       end
       false
     elsif x_current > x_destination
@@ -89,22 +92,22 @@ class Piece < ApplicationRecord
 
     if x_current < x_destination && y_current < y_destination # up-right diagonal
       while x_current < x_destination && y_current < y_destination do
-        return true if game.is_occupied?((x_current += 1),(y_current += 1))
+        return true if is_occupied?((x_current += 1),(y_current += 1))
       end
       false
     elsif x_current > x_destination && y_current < y_destination # up-left diagonal
       while x_current > x_destination && y_current < y_destination do
-        return true if game.is_occupied?((x_current -= 1),(y_current += 1))
+        return true if is_occupied?((x_current -= 1),(y_current += 1))
       end
       false
     elsif x_current < x_destination && y_current > y_destination # down-right diagonal
       while x_current > x_destination && y_current < y_destination do
-        return true if game.is_occupied?((x_current += 1),(y_current -= 1))
+        return true if is_occupied?((x_current += 1),(y_current -= 1))
       end
       false
     else #down-left diagonal
       while x_current > x_destination && y_current < y_destination do
-        return true if game.is_occupied?((x_current -= 1),(y_current -= 1))
+        return true if is_occupied?((x_current -= 1),(y_current -= 1))
       end
       false
     end
@@ -124,7 +127,7 @@ class Piece < ApplicationRecord
     #the valid_move? method covers the color of the piece
     elsif is_occupied?(x_destination, y_destination) && valid_move?(x_destination, y_destination)
       game.pieces.where(position_x = x_destination, position_y = y_destination).delete
-      piece.update_attributes(:position_x => x_destination, :position_y => y_destination)
+      update_attributes(:position_x => x_destination, :position_y => y_destination)
     end
   end
 
