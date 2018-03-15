@@ -29,7 +29,10 @@ class GamesController < ApplicationController
     if @game.owner != current_user.id
       @game.update_attribute(:opponent, current_user)
       @game.save
-      redirect_to game_path(@game)
+      if current_user.in_check?
+        flash[:alert] = "You're in check!"
+      end
+    redirect_to game_path(@game)
     else
       render :new, status: :unprocessable_entity
     end
