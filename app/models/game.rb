@@ -2,7 +2,7 @@ class Game < ApplicationRecord
   attr_accessor :owner, :opponent
   after_create :populate_game!
 
-  belongs_to :owner, class_name: 'User' , foreign_key: 'owner'
+  belongs_to :owner, class_name: 'User' , foreign_key: 'owner_id'
   belongs_to :opponent, class_name: 'User', foreign_key: 'opponent', optional: true
   has_many :pieces
 
@@ -38,13 +38,13 @@ class Game < ApplicationRecord
 
   def in_check?
     if self.pieces.find_by(type: 'King', color: 'black') != nil
-      black_in_check? 
+      black_in_check?
     elsif self.pieces.find_by(type: 'King', color: 'white') != nil
       white_in_check?
     else
       return false
-    end 
-  end 
+    end
+  end
 
   def black_in_check?
     black_king = self.pieces.find_by(type: 'King', color: 'black')
@@ -54,10 +54,10 @@ class Game < ApplicationRecord
     self.pieces.each do |piece|
       if piece.valid_move?(position_x, position_y) && piece.color == 'white'
         return true
-      end 
+      end
     end
-    return false 
-  end 
+    return false
+  end
 
 
   def white_in_check?
@@ -68,13 +68,13 @@ class Game < ApplicationRecord
     # binding.pry
 
     pieces.where(color: 'black', game_id: self).each do |piece|
-      if piece.valid_move?(position_x, position_y) == true # && piece.color == 'black' 
+      if piece.valid_move?(position_x, position_y) == true # && piece.color == 'black'
         return true
-      end  
+      end
     end
-    return false 
-  end 
-  
+    return false
+  end
+
   def is_occupied?(destination_x, destination_y)
     Piece.find_by(game_id: self, position_x: destination_x, position_y: destination_y).present?
   end
@@ -84,5 +84,4 @@ class Game < ApplicationRecord
   def piece_params
     params.require(:piece).permit(:type, :position_x, :position_y, :game_id, :color, :captured, :image)
   end
-end 
-
+end

@@ -8,9 +8,11 @@ class GamesController < ApplicationController
   end
 
   def create
-    @game = Game.new(game_params)
-    @game.owner = current_user
-    @game.save
+    # byebug
+    @game = Game.create(game_params)
+    puts "ASDF GAME #{game_params}"
+    @game.owner_id = current_user.id
+    @game.save!
     redirect_to game_path(@game)
   end
 
