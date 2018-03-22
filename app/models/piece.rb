@@ -152,3 +152,51 @@ class Piece < ApplicationRecord
     end
   end
 end
+
+def castle_black!
+   make_castle_move_for_black! if valid_castle_black? 
+end
+
+def valid_castle_black?(position_x,position_y)
+  king = pieces.find_by(type: 'King', color:'black')
+  rook = pieces.find_by(type: 'rook', color:'black')
+  not_moved = ( king.move_count && rook.move_count == 0)
+  return true if !in_check? && not_moved
+  end
+end
+
+def make_castle_move_for_black!
+ if king.valid_move?(1,7)
+    king.move_to(1,7)
+    rook.move_to(2,7)
+  elsif king.valid_move?(5,7)
+    king.move_to(5,7)
+    rook.move_to(4,7)
+  else
+    false
+  end
+end
+
+def castle_white!
+  make_castle_move_for_white! if valid_castle_white?
+end
+
+def valid_castle_white?(position_x,position_y)
+king = pieces.find_by(type: 'King', color:'white')
+rook = pieces.find_by(type: 'rook', color:'white')
+not_moved = ( king.move_count && rook.move_count == 0)
+  return true if !in_check? && not_moved
+  end
+end
+
+def make_castle_move_for_white!
+  if king.valid_move?(1,0)
+    king.move_to(1,0)
+    rook.move_to(2,0)
+  elsif king.valid_move?(5,0)
+    king.move_to(5,0)
+    rook.move_to(4,0)
+  else
+    false
+  end
+end

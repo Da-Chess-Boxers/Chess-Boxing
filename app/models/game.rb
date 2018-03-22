@@ -76,6 +76,14 @@ class Game < ApplicationRecord
     Piece.find_by(game_id: self, position_x: destination_x, position_y: destination_y).present?
   end
 
+  def valid_castle?
+    if pieces.find_by(type: 'King', color: 'black') != nil
+      castle_black!
+    elsif pieces.find_by(type: 'King', color: 'white') != nil
+      castle_white!
+    end
+  end
+  
   def checkmate?
     #in_check? must first return true
     return false if ! self.in_check?
@@ -121,4 +129,3 @@ class Game < ApplicationRecord
     params.require(:piece).permit(:type, :position_x, :position_y, :game_id, :color, :captured, :image)
   end
 end 
-
